@@ -23,6 +23,8 @@ import {
 import { Input } from "@/components/ui/input";
 
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import FileUpload from "@/components/file-upload";
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -34,6 +36,12 @@ const formSchema = z.object({
 });
 
 const InitialModal = () => {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -46,6 +54,10 @@ const InitialModal = () => {
   const onSubmit = async (value: z.infer<typeof formSchema>) => {
     console.log(value);
   };
+
+  if (!isMounted) {
+    return null;
+  }
   return (
     <Dialog open>
       <DialogContent className="bg-white text-black p-0 overflow-hidden">
@@ -64,7 +76,21 @@ const InitialModal = () => {
               <div className="flex items-center justify-center text-center">
                 TODO: Image Upload
               </div>
-
+              <FormField
+                control={form.control}
+                name="imageUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <FileUpload
+                        endpoint="serverImage"
+                        value={field.value}
+                        onChange={field.onChange}
+                      ></FileUpload>
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="name"
