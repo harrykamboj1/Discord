@@ -54,6 +54,27 @@ export const EditMembersModal = () => {
 
   const isModalOpen = isOpen && type === "members";
 
+  const onKick = async (memberId: string) => {
+    try {
+      setLoadingId(memberId);
+      const url = qs.stringifyUrl({
+        url: `/api/members/${memberId}`,
+        query: {
+          serverId: server?.id,
+        },
+      });
+
+      const response = await axios.delete(url);
+
+      router.refresh();
+      onOpen("members", { server: response.data });
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoadingId("");
+    }
+  };
+
   const onRoleChange = async (memberId: string, role: MemberRole) => {
     try {
       setLoadingId(memberId);
@@ -61,7 +82,6 @@ export const EditMembersModal = () => {
         url: `/api/members/${memberId}`,
         query: {
           serverId: server?.id,
-          memberId,
         },
       });
 
@@ -90,7 +110,7 @@ export const EditMembersModal = () => {
         <ScrollArea className="mt-8 max-h-[420px] pr-6">
           {server?.members.map((member) => (
             <div className="flex  items-center gap-x-2 mb-6" key={member.id}>
-              <UserAvater src={member?.profile.imageUrl} />
+              <UserAvater src={member.profile.imageUrl} />
               <div className="flex flex-col gap-y-1">
                 <div className="text-xs font-semibold flex items-center gap-x-1">
                   {member.profile.name}
@@ -98,52 +118,53 @@ export const EditMembersModal = () => {
                 </div>
                 <p className="text-xs text-zinc-500">{member.profile.email}</p>
               </div>
-              {server.profileId !== member.id && loadingId !== member.id && (
-                <div className="ml-auto">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger>
-                      <MoreVertical className="h-4 w-4 text-zinc-500" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent side="left">
-                      <DropdownMenuSub>
-                        <DropdownMenuSubTrigger>
-                          <ShieldQuestion className="w-4 h-4 mr-2" />
-                          <span>Role</span>
-                        </DropdownMenuSubTrigger>
-                        <DropdownMenuPortal>
-                          <DropdownMenuSubContent>
-                            <DropdownMenuItem
-                              onClick={() => onRoleChange(member.id, "GUEST")}
-                            >
-                              <Shield className="w-4 h-4 mr-2" />
-                              Guest
-                              {member.role === "GUEST" && (
-                                <Check className="w-4 h-4 mr-2" />
-                              )}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() =>
-                                onRoleChange(member.id, "MODERATOR")
-                              }
-                            >
-                              <ShieldCheck className="w-4 h-4 mr-2" />
-                              Moderator
-                              {member.role === "MODERATOR" && (
-                                <Check className="w-4 h-4 mr-2" />
-                              )}
-                            </DropdownMenuItem>
-                          </DropdownMenuSubContent>
-                        </DropdownMenuPortal>
-                      </DropdownMenuSub>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem>
-                        <Gavel className="h-4 w-4 mr-2" />
-                        Kick
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              )}
+              {server.profileId !== member.profileId &&
+                loadingId !== member.id && (
+                  <div className="ml-auto">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger>
+                        <MoreVertical className="h-4 w-4 text-zinc-500" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent side="left">
+                        <DropdownMenuSub>
+                          <DropdownMenuSubTrigger>
+                            <ShieldQuestion className="w-4 h-4 mr-2" />
+                            <span>Role</span>
+                          </DropdownMenuSubTrigger>
+                          <DropdownMenuPortal>
+                            <DropdownMenuSubContent>
+                              <DropdownMenuItem
+                                onClick={() => onRoleChange(member.id, "GUEST")}
+                              >
+                                <Shield className="w-4 h-4 mr-2" />
+                                Guest
+                                {member.role === "GUEST" && (
+                                  <Check className="w-4 h-4 mr-2" />
+                                )}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() =>
+                                  onRoleChange(member.id, "MODERATOR")
+                                }
+                              >
+                                <ShieldCheck className="w-4 h-4 mr-2" />
+                                Moderator
+                                {member.role === "MODERATOR" && (
+                                  <Check className="w-4 h-4 mr-2" />
+                                )}
+                              </DropdownMenuItem>
+                            </DropdownMenuSubContent>
+                          </DropdownMenuPortal>
+                        </DropdownMenuSub>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>
+                          <Gavel className="h-4 w-4 mr-2" />
+                          Kick
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                )}
               {loadingId === member.id && (
                 <Loader2 className="animate-spin text-zinc-500 ml-auto w-4 h-4" />
               )}
