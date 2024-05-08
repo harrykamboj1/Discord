@@ -7,6 +7,9 @@ import ServerHeader from "./server-header";
 import { ScrollArea } from "../ui/scroll-area";
 import { ServerSearch } from "./server-search";
 import { Hash, Mic, ShieldAlert, ShieldCheck, Video } from "lucide-react";
+import { Separator } from "../ui/separator";
+import { ServerSection } from "./server-section";
+import { ServerChannel } from "./server-channel";
 
 interface ServerSidebarProps {
   serverId: string;
@@ -120,6 +123,25 @@ const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
             ]}
           />
         </div>
+        <Separator className="bg-zinc-200 dark:bg-zinc-700 rounded-md my-2" />
+        {!!textChannels?.length && (
+          <div className="mb-2">
+            <ServerSection
+              label="Text Channels"
+              channelType={ChannelType.TEXT}
+              sectionType="channels"
+              role={role}
+            />
+            {textChannels.map((channel) => (
+              <ServerChannel
+                channel={channel}
+                role={role}
+                key={channel.id}
+                server={server}
+              />
+            ))}
+          </div>
+        )}
       </ScrollArea>
     </div>
   );
