@@ -1,9 +1,16 @@
 "use client";
 
 import { Search } from "lucide-react";
-import { CommandDialog, CommandInput } from "../ui/command";
-import { useState } from "react";
-import { CommandEmpty, CommandList } from "cmdk";
+import {
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "../ui/command";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 
 interface ServerSearchProps {
   data:
@@ -22,6 +29,24 @@ interface ServerSearchProps {
 }
 export const ServerSearch = ({ data }: ServerSearchProps) => {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
+  const params = useParams();
+
+  const onClick = ({
+    id,
+    type,
+  }: {
+    id: string;
+    type: "channel" | "member";
+  }) => {
+    setOpen(false);
+    if (type == "member") {
+      return router.push(`/servers/${params?.serverId}/conversations/${id}`);
+    } else {
+      return router.push(`/servers/${params?.serverId}/channels/${id}`);
+    }
+  };
+
   return (
     <>
       <button
@@ -46,6 +71,22 @@ export const ServerSearch = ({ data }: ServerSearchProps) => {
         <CommandList>
           <CommandEmpty>No Results Found</CommandEmpty>
         </CommandList>
+        {data?.map(({ label, type, data }) => {
+          if (!data?.length) return null;
+
+          return (
+            <CommandGroup key={label} heading={label}>
+              {data.map(({ id, icon, name }) => {
+                return (
+                  <CommandItem onSelect={() => onClick({ id, type })} key={id}>
+                    {icon}
+                    <span>{name}</span>
+                  </CommandItem>
+                );
+              })}
+            </CommandGroup>
+          );
+        })}
       </CommandDialog>
     </>
   );
