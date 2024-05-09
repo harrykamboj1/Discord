@@ -18,7 +18,7 @@ export const LeaveServerModal = () => {
   const { isOpen, onClose, type, data } = useModal();
   const [isLoading, setIsLoading] = useState(false);
   const { server } = data;
-  const isModalOpen = isOpen && type === "invite";
+  const isModalOpen = isOpen && type === "leaveServer";
   const router = useRouter();
 
   const onClick = async () => {

@@ -20,7 +20,6 @@ import {
 
 import qs from "query-string";
 import { useModal } from "@/hooks/use-modal-store";
-import { useOrigin } from "@/hooks/use-origin";
 import { ServerWithMembersWithProfiles } from "@/type";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { ScrollArea } from "../ui/scroll-area";
@@ -49,7 +48,6 @@ export const EditMembersModal = () => {
   const { onOpen, isOpen, onClose, type, data } = useModal();
   const [loadingId, setLoadingId] = useState("");
   const router = useRouter();
-  const origin = useOrigin();
   const { server } = data as { server: ServerWithMembersWithProfiles };
 
   const isModalOpen = isOpen && type === "members";
@@ -108,7 +106,7 @@ export const EditMembersModal = () => {
           </DialogDescription>
         </DialogHeader>
         <ScrollArea className="mt-8 max-h-[420px] pr-6">
-          {server?.members.map((member) => (
+          {server?.members?.map((member) => (
             <div className="flex  items-center gap-x-2 mb-6" key={member.id}>
               <UserAvater src={member.profile.imageUrl} />
               <div className="flex flex-col gap-y-1">

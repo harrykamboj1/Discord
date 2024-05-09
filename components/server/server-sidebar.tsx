@@ -10,6 +10,7 @@ import { Hash, Mic, ShieldAlert, ShieldCheck, Video } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { ServerSection } from "./server-section";
 import { ServerChannel } from "./server-channel";
+import ServerMember from "./server-member";
 
 interface ServerSidebarProps {
   serverId: string;
@@ -68,7 +69,8 @@ const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
   const members = server?.members.filter(
     (member) => member.profileId !== profile.id
   );
-
+  console.log(videoChannels);
+  console.log(members);
   if (!server) {
     return redirect("/");
   }
@@ -139,6 +141,56 @@ const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
                 key={channel.id}
                 server={server}
               />
+            ))}
+          </div>
+        )}
+        {!!audioChannels?.length && (
+          <div className="mb-2">
+            <ServerSection
+              label="Voice Channels"
+              channelType={ChannelType.AUDIO}
+              sectionType="channels"
+              role={role}
+            />
+            {audioChannels.map((channel) => (
+              <ServerChannel
+                channel={channel}
+                role={role}
+                key={channel.id}
+                server={server}
+              />
+            ))}
+          </div>
+        )}
+
+        {!!videoChannels?.length && (
+          <div className="mb-2">
+            <ServerSection
+              label="Video Channels"
+              channelType={ChannelType.VIDEO}
+              sectionType="channels"
+              role={role}
+            />
+            {videoChannels.map((channel) => (
+              <ServerChannel
+                channel={channel}
+                role={role}
+                key={channel.id}
+                server={server}
+              />
+            ))}
+          </div>
+        )}
+        {!!members?.length && (
+          <div className="mb-2">
+            <ServerSection
+              label="Members"
+              sectionType="members"
+              role={role}
+              server={server}
+            />
+            {members?.map((member) => (
+              <ServerMember member={member} server={server} key={member.id} />
             ))}
           </div>
         )}
