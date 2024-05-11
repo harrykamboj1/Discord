@@ -56,13 +56,12 @@ export const EditChannelModal = () => {
   const isModalOpen = isOpen && type === "editChannel";
 
   const router = useRouter();
-  const params = useParams();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      type: channel?.type || ChannelType.TEXT,
+      type: channel?.type ?? ChannelType.TEXT,
     },
   });
 
@@ -71,18 +70,18 @@ export const EditChannelModal = () => {
       form.setValue("name", channel.name);
       form.setValue("type", channel.type);
     }
-  }, [form]);
+  }, [form, channel]);
 
   const isLoading = form.formState.isSubmitting;
   const onSubmit = async (value: z.infer<typeof formSchema>) => {
     try {
       const url = qs.stringifyUrl({
-        url: "/api/channels",
+        url: `/api/channels/${channel?.id}`,
         query: {
-          serverId: params?.serverId,
+          serverId: server?.id,
         },
       });
-      await axios.post(url, value);
+      await axios.patch(url, value);
 
       form.reset();
       router.refresh();
