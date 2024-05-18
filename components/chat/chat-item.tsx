@@ -13,6 +13,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import queryString from "query-string";
+import axios from "axios";
 
 interface ChatItemProps {
   id: string;
@@ -55,7 +57,15 @@ export const ChatItem = ({
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
-    const handleKeyDown = (event: any) => {};
+    const handleKeyDown = (event: any) => {
+      if (event.key === "Escape" || event.keyCode === 27) {
+        setIsEditing(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => window.removeEventListener("keydown", handleKeyDown);
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -65,8 +75,21 @@ export const ChatItem = ({
     },
   });
 
-  const onSubmit = (values) => {
-    console.log(values);
+  const isLoading = form.formState.isSubmitting;
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      const url = queryString.stringifyUrl({
+        url: `${socketUrl}/${id}`,
+        query: socketQuery,
+      });
+
+      await axios.patch(url, values);
+
+      form.reset();
+      setIsEditing(false);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   useEffect(() => {
@@ -76,9 +99,10 @@ export const ChatItem = ({
   const fileType = fileUrl?.split(".").pop();
   const isAdmin = currentMember.role === MemberRole.ADMIN;
   const isModerator = currentMember.role === MemberRole.MODERATOR;
-  const isOwner = currentMember.role === member.id;
+  const isOwner = currentMember.id === member.id;
   const canDeleteMessage = !deleted && (isAdmin || isModerator || isOwner);
   const canEditMessage = !deleted && isOwner && !fileUrl;
+
   const isPdf = fileType === "pdf" && fileUrl;
   const isImage = !isPdf && fileUrl;
 
@@ -160,6 +184,7 @@ export const ChatItem = ({
                       <FormControl>
                         <div className="relative w-full">
                           <Input
+                            disabled={isLoading}
                             className="p-2 bg-zinc-200/90 dark:bg-zinc-700/75 border-none border-0 focus-visible:ring-0 focus-visbile:ring-offset-0 text-zinc-600 dark:text-zinc-200"
                             placeholder="Edited Message"
                             {...field}
@@ -169,7 +194,7 @@ export const ChatItem = ({
                     </FormItem>
                   )}
                 />
-                <Button size="sm" variant="primary">
+                <Button disabled={isLoading} size="sm" variant="primary">
                   Save
                 </Button>
               </form>
