@@ -72,5 +72,6 @@ export async function GET(req: Request) {
     });
   } catch (e) {
     console.log("[DIRECT_MESSAGES_GET]", e);
+    return NextResponse.json("SOMETHING_WENT_WRONG", { status: 500 });
   }
 }
