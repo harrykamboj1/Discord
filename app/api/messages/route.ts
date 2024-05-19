@@ -72,5 +72,6 @@ export async function GET(req: Request) {
     });
   } catch (e) {
     console.log("[MESSAGES_GET]", e);
+    return NextResponse.json("INTERNAL_SERVER_ERROR", { status: 500 });
   }
 }
