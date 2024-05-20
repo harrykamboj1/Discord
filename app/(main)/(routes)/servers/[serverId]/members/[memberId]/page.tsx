@@ -36,6 +36,7 @@ const MemberIdPage = async ({ params }: MemberIdPageProps) => {
     currentMember?.id,
     params.memberId
   );
+
   if (!conversation) {
     return redirect(`/servers/${params.serverId}`);
   }
@@ -56,11 +57,11 @@ const MemberIdPage = async ({ params }: MemberIdPageProps) => {
       <ChatMessage
         member={currentMember}
         name={otherMember.profile.name}
-        chatId={conversation.id}
+        chatId={conversation?.id}
         type="conversation"
         apiUrl="/api/direct-messages"
         paramKey="conversationId"
-        paramValue="conversation.id"
+        paramValue={conversation.id}
         socketUrl="/api/socket/direct-messages"
         socketQuery={{
           conversationId: conversation.id,
