@@ -15,8 +15,8 @@ interface ServerChannelProps {
 
 const iconMap = {
   [ChannelType.TEXT]: Hash,
-  [ChannelType.AUDIO]: Mic,
-  [ChannelType.VIDEO]: Video,
+  // [ChannelType.AUDIO]: Mic,
+  // [ChannelType.VIDEO]: Video,
 };
 export const ServerChannel = ({
   channel,

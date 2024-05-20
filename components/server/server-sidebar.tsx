@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import ServerHeader from "./server-header";
 import { ScrollArea } from "../ui/scroll-area";
 import { ServerSearch } from "./server-search";
-import { Hash, Mic, ShieldAlert, ShieldCheck, Video } from "lucide-react";
+import { Hash, ShieldAlert, ShieldCheck } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { ServerSection } from "./server-section";
 import { ServerChannel } from "./server-channel";
@@ -18,8 +18,8 @@ interface ServerSidebarProps {
 
 const iconMap = {
   [ChannelType.TEXT]: <Hash className="mr-2 h-4 w-4" />,
-  [ChannelType.AUDIO]: <Mic className="mr-2 h-4 w-4" />,
-  [ChannelType.VIDEO]: <Video className="mr-2 h-4 w-4" />,
+  // [ChannelType.AUDIO]: <Mic className="mr-2 h-4 w-4" />,
+  // [ChannelType.VIDEO]: <Video className="mr-2 h-4 w-4" />,
 };
 
 const roleMap = {
@@ -60,16 +60,16 @@ const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
   const textChannels = server?.channels.filter(
     (channel) => channel.type === ChannelType.TEXT
   );
-  const audioChannels = server?.channels.filter(
-    (channel) => channel.type === ChannelType.AUDIO
-  );
-  const videoChannels = server?.channels.filter(
-    (channel) => channel.type === ChannelType.VIDEO
-  );
+  // const audioChannels = server?.channels.filter(
+  //   (channel) => channel.type === ChannelType.AUDIO
+  // );
+  // const videoChannels = server?.channels.filter(
+  //   (channel) => channel.type === ChannelType.VIDEO
+  // );
   const members = server?.members.filter(
     (member) => member.profileId !== profile.id
   );
-  console.log(videoChannels);
+  // console.log(videoChannels);
   console.log(members);
   if (!server) {
     return redirect("/");
@@ -95,24 +95,24 @@ const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
                   icon: iconMap[channel.type],
                 })),
               },
-              {
-                label: "Voice Channels",
-                type: "channel",
-                data: audioChannels?.map((channel) => ({
-                  id: channel.id,
-                  name: channel.name,
-                  icon: iconMap[channel.type],
-                })),
-              },
-              {
-                label: "Video Channels",
-                type: "channel",
-                data: videoChannels?.map((channel) => ({
-                  id: channel.id,
-                  name: channel.name,
-                  icon: iconMap[channel.type],
-                })),
-              },
+              // {
+              //   label: "Voice Channels",
+              //   type: "channel",
+              //   data: audioChannels?.map((channel) => ({
+              //     id: channel.id,
+              //     name: channel.name,
+              //     icon: iconMap[channel.type],
+              //   })),
+              // },
+              // {
+              //   label: "Video Channels",
+              //   type: "channel",
+              //   data: videoChannels?.map((channel) => ({
+              //     id: channel.id,
+              //     name: channel.name,
+              //     icon: iconMap[channel.type],
+              //   })),
+              // },
               {
                 label: "Members",
                 type: "member",
@@ -144,7 +144,7 @@ const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
             ))}
           </div>
         )}
-        {!!audioChannels?.length && (
+        {/* {!!audioChannels?.length && (
           <div className="mb-2">
             <ServerSection
               label="Voice Channels"
@@ -161,9 +161,9 @@ const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
               />
             ))}
           </div>
-        )}
+        )} */}
 
-        {!!videoChannels?.length && (
+        {/* {!!videoChannels?.length && (
           <div className="mb-2">
             <ServerSection
               label="Video Channels"
@@ -180,7 +180,7 @@ const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
               />
             ))}
           </div>
-        )}
+        )} */}
         {!!members?.length && (
           <div className="mb-2">
             <ServerSection
