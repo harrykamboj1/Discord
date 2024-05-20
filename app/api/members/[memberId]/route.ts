@@ -7,9 +7,9 @@ export async function DELETE(
   { params }: { params: { memberId: string } }
 ) {
   try {
+    console.info("ENTER");
     const profile = await currentProfile();
     const { searchParams } = new URL(req.url);
-    const { role } = await req.json();
     const serverId = searchParams.get("serverId");
 
     if (!profile) {
@@ -18,10 +18,11 @@ export async function DELETE(
     if (!serverId) {
       return new NextResponse("Server Id missing", { status: 400 });
     }
+
     if (!params.memberId) {
       return new NextResponse("Member Id missing", { status: 400 });
     }
-
+    console.info("ENTER IN SERVER UPDATE");
     const serverUpdate = await db.server.update({
       where: {
         id: serverId,
